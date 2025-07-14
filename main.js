@@ -24,75 +24,89 @@ const handGeo = new THREE.BoxGeometry(0.11, 0.09, 0.13);
 const armMat = new THREE.MeshBasicMaterial({ color: 0xffe0bd });
 
 function createBaddie(x, z) {
-    // More humanlike baddie: torso, head, arms, legs, neck, hands, feet
+    // Zombie baddie: green skin, sunken eyes, ragged clothes, hunched posture
     const group = new THREE.Group();
-    // Torso
-    const torsoGeo = new THREE.BoxGeometry(0.4, 0.7, 0.22);
-    const torsoMat = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    // Torso (ragged, hunched)
+    const torsoGeo = new THREE.BoxGeometry(0.45, 0.6, 0.25);
+    const torsoMat = new THREE.MeshBasicMaterial({ color: 0x556B2F }); // dark olive green
     const torso = new THREE.Mesh(torsoGeo, torsoMat);
-    torso.position.set(0, 0.85, 0);
+    torso.position.set(0, 0.8, 0);
+    torso.rotation.x = -0.18; // hunched
     group.add(torso);
     // Neck
     const neckGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.12, 8);
-    const neckMat = new THREE.MeshBasicMaterial({ color: 0xffe0bd });
+    const neckMat = new THREE.MeshBasicMaterial({ color: 0x99cc99 }); // pale green
     const neck = new THREE.Mesh(neckGeo, neckMat);
-    neck.position.set(0, 1.25, 0);
+    neck.position.set(0, 1.18, 0);
     group.add(neck);
-    // Head
-    const headGeo = new THREE.SphereGeometry(0.22, 12, 12);
-    const headMat = new THREE.MeshBasicMaterial({ color: 0xffe0bd });
+    // Head (green, sunken eyes)
+    const headGeo = new THREE.SphereGeometry(0.23, 12, 12);
+    const headMat = new THREE.MeshBasicMaterial({ color: 0x99cc99 });
     const head = new THREE.Mesh(headGeo, headMat);
-    head.position.set(0, 1.45, 0);
+    head.position.set(0, 1.38, 0);
+    // Add sunken eyes (black spheres)
+    const eyeGeo = new THREE.SphereGeometry(0.045, 8, 8);
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x222222 });
+    const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+    leftEye.position.set(-0.07, 1.43, 0.16);
+    const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+    rightEye.position.set(0.07, 1.43, 0.16);
     group.add(head);
-    // Left arm (upper/lower/hand)
-    // Attach upper arm to shoulder, lower arm to upper arm, hand to lower arm for natural bending
+    group.add(leftEye);
+    group.add(rightEye);
+    // Left arm (outstretched, ragged)
     const leftShoulder = new THREE.Object3D();
-    leftShoulder.position.set(-0.2, 1.15, 0.08);
+    leftShoulder.position.set(-0.25, 1.08, 0.08);
     group.add(leftShoulder);
-    const leftUpperArm = new THREE.Mesh(upperArmGeo, armMat);
+    const leftUpperArm = new THREE.Mesh(upperArmGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     leftUpperArm.position.set(0, -0.16, 0);
-    leftUpperArm.rotation.x = 0.1; // arms mostly down
+    leftUpperArm.rotation.x = -0.7; // outstretched forward
     leftShoulder.add(leftUpperArm);
     const leftElbow = new THREE.Object3D();
     leftElbow.position.set(0, -0.16, 0);
     leftUpperArm.add(leftElbow);
-    const leftLowerArm = new THREE.Mesh(lowerArmGeo, armMat);
+    const leftLowerArm = new THREE.Mesh(lowerArmGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     leftLowerArm.position.set(0, -0.14, 0);
-    leftLowerArm.rotation.x = 0.1;
+    leftLowerArm.rotation.x = -0.5;
     leftElbow.add(leftLowerArm);
-    const leftHand = new THREE.Mesh(handGeo, armMat);
+    const leftHand = new THREE.Mesh(handGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     leftHand.position.set(0, -0.16, 0);
     leftLowerArm.add(leftHand);
-    // Right arm (upper/lower/hand/gun)
+    // Right arm (outstretched, ragged)
     const rightShoulder = new THREE.Object3D();
-    rightShoulder.position.set(0.2, 1.15, 0.08);
+    rightShoulder.position.set(0.25, 1.08, 0.08);
     group.add(rightShoulder);
-    const rightUpperArm = new THREE.Mesh(upperArmGeo, armMat);
+    const rightUpperArm = new THREE.Mesh(upperArmGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     rightUpperArm.position.set(0, -0.16, 0);
-    rightUpperArm.rotation.x = 0.1; // arms mostly down
+    rightUpperArm.rotation.x = -0.7;
     rightShoulder.add(rightUpperArm);
     const rightElbow = new THREE.Object3D();
     rightElbow.position.set(0, -0.16, 0);
     rightUpperArm.add(rightElbow);
-    const rightLowerArm = new THREE.Mesh(lowerArmGeo, armMat);
+    const rightLowerArm = new THREE.Mesh(lowerArmGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     rightLowerArm.position.set(0, -0.14, 0);
-    rightLowerArm.rotation.x = 0.1;
+    rightLowerArm.rotation.x = -0.5;
     rightElbow.add(rightLowerArm);
-    const rightHand = new THREE.Mesh(handGeo, armMat);
+    const rightHand = new THREE.Mesh(handGeo, new THREE.MeshBasicMaterial({ color: 0x99cc99 }));
     rightHand.position.set(0, -0.16, 0);
     rightLowerArm.add(rightHand);
-    // Gun (simple box)
-    const gunGeo = new THREE.BoxGeometry(0.18, 0.18, 0.4);
-    const gunMat = new THREE.MeshBasicMaterial({ color: 0x222222 });
-    const gun = new THREE.Mesh(gunGeo, gunMat);
-    gun.position.set(0, -0.12, 0.32);
-    rightHand.add(gun);
-    group.userData.gun = gun;
-    // Legs (upper/lower/feet)
+    // Randomly add a gun to some zombies
+    let hasGun = Math.random() < 0.5;
+    if (hasGun) {
+        const gunGeo = new THREE.BoxGeometry(0.18, 0.18, 0.4);
+        const gunMat = new THREE.MeshBasicMaterial({ color: 0x222222 });
+        const gun = new THREE.Mesh(gunGeo, gunMat);
+        gun.position.set(0, -0.12, 0.32);
+        rightHand.add(gun);
+        group.userData.gun = gun;
+    } else {
+        group.userData.gun = null;
+    }
+    // Legs (ragged pants, shuffling)
     const upperLegGeo = new THREE.CylinderGeometry(0.09, 0.09, 0.38, 8);
     const lowerLegGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 8);
     const footGeo = new THREE.BoxGeometry(0.14, 0.06, 0.22);
-    const legMat = new THREE.MeshBasicMaterial({ color: 0x222244 });
+    const legMat = new THREE.MeshBasicMaterial({ color: 0x333333 }); // dark pants
     const leftUpperLeg = new THREE.Mesh(upperLegGeo, legMat);
     leftUpperLeg.position.set(-0.13, 0.45, 0);
     leftUpperLeg.rotation.x = -Math.PI/32;
@@ -168,14 +182,6 @@ function init() {
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     scene.add(floor);
 
-    // Add a wall (centered, vertical, across the X axis)
-    const wallGeometry = new THREE.BoxGeometry(0.8, 3, 40); // thickness, height, length
-    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x888888 });
-    const wall = new THREE.Mesh(wallGeometry, wallMaterial);
-    wall.position.set(0, 1.6, 0); // center of arena, standing upright
-    wall.userData.isWall = true;
-    scene.add(wall);
-    window.arenaWall = wall;
 
     // Add baddies
     createBaddie(0, -2);
@@ -295,14 +301,17 @@ function animate() {
         // Decrease interval for faster spawns
         window.spawnInterval = Math.max(40, 200 - window.baddieDifficulty*8);
     }
-    // Baddie shooting
+    // Baddie shooting: only snipers (with guns) shoot, and only when alert
     for (let baddie of baddies) {
+        if (!baddie.userData.gun) continue; // only snipers shoot
+        if (baddie.userData.state !== 'alert') continue; // only shoot when alert
         const dx = camera.position.x - baddie.position.x;
         const dz = camera.position.z - baddie.position.z;
         const dist = Math.sqrt(dx*dx + dz*dz);
         // Make shooting harder as difficulty increases
-        let shootChance = 0.02 + (window.baddieDifficulty||0)*0.002;
-        if (dist < 6 && Math.random() < shootChance) {
+        let shootChance = 0.03 + (window.baddieDifficulty||0)*0.003;
+        // Snipe from a distance (shoot if player is within 28 units, but not too close)
+        if (dist > 8 && dist < 28 && Math.random() < shootChance) {
             // Shoot at player from gun muzzle
             const bulletGeo = new THREE.SphereGeometry(0.08, 8, 8);
             const bulletMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
@@ -492,6 +501,7 @@ function animate() {
                 if (headBox.containsPoint(bullet.position)) {
                     // Headshot: instant kill
                     baddie.userData.state = 'alert'; // become alert if shot
+                    baddie.userData.alertUntil = performance.now() + 30000; // alert for 30s
                     makeCorpse(baddie);
                     baddies.splice(j, 1);
                     scene.remove(bullet);
@@ -503,6 +513,7 @@ function animate() {
             const baddieBox = new THREE.Box3().setFromObject(baddie);
             if (baddieBox.containsPoint(bullet.position)) {
                 baddie.userData.state = 'alert'; // become alert if shot
+                baddie.userData.alertUntil = performance.now() + 30000; // alert for 30s
                 baddie.userData.health -= 1;
                 if (baddie.userData.health <= 0) {
                     makeCorpse(baddie);
@@ -518,34 +529,125 @@ function animate() {
         }
     }
 
-    // Baddie movement: chase player if close, else wander, with humanlike animation
+    // Baddie movement: snipers (with guns) snipe and keep away, runners (no guns) chase and attack by touch
     for (let baddie of baddies) {
         const dx = camera.position.x - baddie.position.x;
         const dz = camera.position.z - baddie.position.z;
         const dist = Math.sqrt(dx*dx + dz*dz);
         let moving = false;
-        if (dist < 16) { // Increased alert area
-            // Chase player
-            baddie.userData.state = 'alert';
-            baddie.children[0].material.color.set(0xff0000); // torso
-            // Use per-baddie moveSpeed for difficulty
-            const moveSpeed = baddie.userData.moveSpeed || 0.03;
-            baddie.position.x += moveSpeed * dx/dist;
-            baddie.position.z += moveSpeed * dz/dist;
-            moving = true;
-            // Face player
-            baddie.lookAt(camera.position.x, baddie.position.y + 1, camera.position.z);
-        } else {
-            // Idle wander
-            baddie.userData.state = 'idle';
-            baddie.children[0].material.color.set(0x8B4513); // torso
-            if (Math.random() < 0.01) {
-                baddie.userData.wanderDir = Math.random() * Math.PI * 2;
+        // --- Zombie jump logic only (dodging removed) ---
+        if (!baddie.userData.isCorpse) {
+            // Jump state
+            if (!baddie.userData.jumpY) baddie.userData.jumpY = 0;
+            if (!baddie.userData.isJumping) baddie.userData.isJumping = false;
+            if (!baddie.userData.jumpVel) baddie.userData.jumpVel = 0;
+            // No random jumping
+            // Handle jumping
+            if (baddie.userData.isJumping) {
+                baddie.userData.jumpY += baddie.userData.jumpVel;
+                baddie.userData.jumpVel -= gravity;
+                if (baddie.userData.jumpY <= 0) {
+                    baddie.userData.jumpY = 0;
+                    baddie.userData.isJumping = false;
+                    baddie.userData.jumpVel = 0;
+                }
             }
-            if (baddie.userData.wanderDir !== undefined) {
-                baddie.position.x += 0.01 * Math.cos(baddie.userData.wanderDir);
-                baddie.position.z += 0.01 * Math.sin(baddie.userData.wanderDir);
+            // Set baddie vertical position
+            baddie.position.y = baddie.userData.jumpY;
+        }
+        const hasGun = !!baddie.userData.gun;
+        // Floor bounds
+        const floorMinX = -40, floorMaxX = 40;
+        const floorMinZ = -40, floorMaxZ = 40;
+        // Check alert timer
+        let isAlert = false;
+        if (baddie.userData.alertUntil && performance.now() < baddie.userData.alertUntil) {
+            isAlert = true;
+        }
+        if (hasGun) {
+            // Sniper zombie: larger alert radius, keep away, snipe
+            if (dist < 28 || baddie.userData.state === 'alert' || isAlert) {
+                baddie.userData.state = 'alert';
+                baddie.children[0].material.color.set(0xff0000); // torso
+                // Keep distance: try to stay 12-24 units away
+                const moveSpeed = baddie.userData.moveSpeed || 0.03;
+                if (dist < 12) {
+                    // Too close, move away from player
+                    baddie.position.x -= moveSpeed * dx/dist;
+                    baddie.position.z -= moveSpeed * dz/dist;
+                    moving = true;
+                } else if (dist > 24) {
+                    // Too far, move closer
+                    baddie.position.x += moveSpeed * dx/dist;
+                    baddie.position.z += moveSpeed * dz/dist;
+                    moving = true;
+                } else {
+                    // Hold position, snipe
+                    moving = false;
+                }
+                // Clamp to floor bounds
+                baddie.position.x = Math.max(floorMinX+1, Math.min(floorMaxX-1, baddie.position.x));
+                baddie.position.z = Math.max(floorMinZ+1, Math.min(floorMaxZ-1, baddie.position.z));
+                // Face player
+                baddie.lookAt(camera.position.x, baddie.position.y + 1, camera.position.z);
+            } else {
+                // Idle wander
+                baddie.userData.state = 'idle';
+                baddie.children[0].material.color.set(0x8B4513); // torso
+                if (Math.random() < 0.01) {
+                    baddie.userData.wanderDir = Math.random() * Math.PI * 2;
+                }
+                if (baddie.userData.wanderDir !== undefined) {
+                    baddie.position.x += 0.01 * Math.cos(baddie.userData.wanderDir);
+                    baddie.position.z += 0.01 * Math.sin(baddie.userData.wanderDir);
+                    // Clamp to floor bounds
+                    baddie.position.x = Math.max(floorMinX+1, Math.min(floorMaxX-1, baddie.position.x));
+                    baddie.position.z = Math.max(floorMinZ+1, Math.min(floorMaxZ-1, baddie.position.z));
+                    moving = true;
+                }
+            }
+        } else {
+            // Runner zombie: smaller alert radius, chase and attack by touch
+            if (dist < 16 || baddie.userData.state === 'alert' || isAlert) {
+                baddie.userData.state = 'alert';
+                baddie.children[0].material.color.set(0xff0000); // torso
+                const moveSpeed = baddie.userData.moveSpeed || 0.03;
+                baddie.position.x += moveSpeed * dx/dist;
+                baddie.position.z += moveSpeed * dz/dist;
+                // Clamp to floor bounds
+                baddie.position.x = Math.max(floorMinX+1, Math.min(floorMaxX-1, baddie.position.x));
+                baddie.position.z = Math.max(floorMinZ+1, Math.min(floorMaxZ-1, baddie.position.z));
                 moving = true;
+                // Face player
+                baddie.lookAt(camera.position.x, baddie.position.y + 1, camera.position.z);
+                // Attack by touch
+                if (dist < 0.7 && camera.position.y <= 1.7) {
+                    playerHealth -= 1;
+                    // Knock back player slightly
+                    camera.position.x += -0.7 * dx/dist;
+                    camera.position.z += -0.7 * dz/dist;
+                    document.body.style.background = '#ffcccc';
+                    setTimeout(() => document.body.style.background = '', 100);
+                    if (playerHealth <= 0) {
+                        alert('Game Over!');
+                        window.location.reload();
+                    }
+                }
+            } else {
+                // Idle wander
+                baddie.userData.state = 'idle';
+                baddie.children[0].material.color.set(0x8B4513); // torso
+                if (Math.random() < 0.01) {
+                    baddie.userData.wanderDir = Math.random() * Math.PI * 2;
+                }
+                if (baddie.userData.wanderDir !== undefined) {
+                    baddie.position.x += 0.01 * Math.cos(baddie.userData.wanderDir);
+                    baddie.position.z += 0.01 * Math.sin(baddie.userData.wanderDir);
+                    // Clamp to floor bounds
+                    baddie.position.x = Math.max(floorMinX+1, Math.min(floorMaxX-1, baddie.position.x));
+                    baddie.position.z = Math.max(floorMinZ+1, Math.min(floorMaxZ-1, baddie.position.z));
+                    moving = true;
+                }
             }
         }
         // Animate legs for walking
