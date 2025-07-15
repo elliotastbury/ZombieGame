@@ -183,10 +183,7 @@ function init() {
     scene.add(floor);
 
 
-    // Add baddies
-    createBaddie(0, -2);
-    createBaddie(-2, -4);
-    createBaddie(2, -6);
+    // No initial baddies
 
     window.addEventListener('resize', onWindowResize);
     document.addEventListener('keydown', onKeyDown);
