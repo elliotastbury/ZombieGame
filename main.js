@@ -273,30 +273,39 @@ function animate() {
         window.location.reload();
         return;
     }
-    // Progressive baddie spawning logic
+    // Progressive baddie spawning logic (now also speeds up over time and increases spawn count)
     if (!window.spawnTimer) {
         window.spawnTimer = 0;
         window.spawnInterval = 200; // frames between spawns
         window.baddieDifficulty = 0;
+        window.gameStartTime = performance.now();
     }
     window.spawnTimer++;
+    // Calculate how much time has passed (in seconds)
+    const elapsedSec = (performance.now() - window.gameStartTime) / 1000;
+    // Every 20 seconds, increase spawn rate and number of zombies per spawn
+    const difficultyLevel = Math.floor(elapsedSec / 20);
+    // Make spawn interval decrease faster as time goes on
+    window.spawnInterval = Math.max(15, 200 - difficultyLevel * 18);
+    // Number of zombies to spawn per interval (starts at 1, increases over time)
+    const zombiesPerSpawn = 1 + Math.floor(difficultyLevel / 2);
     if (window.spawnTimer > window.spawnInterval) {
         window.spawnTimer = 0;
-        window.baddieDifficulty++;
-        // Random spawn position anywhere on platform (avoid spawning too close to player)
-        let x, z;
-        do {
-            x = Math.random()*38 - 19;
-            z = Math.random()*38 - 19;
-        } while (Math.abs(x - camera.position.x) < 3 && Math.abs(z - camera.position.z) < 3);
-        // Increase health and speed as difficulty rises
-        const health = BAD_GUY_HEALTH + Math.floor(window.baddieDifficulty/3);
-        const speed = 0.03 + window.baddieDifficulty*0.003;
-        createBaddie(x, z);
-        baddies[baddies.length-1].userData.health = health;
-        baddies[baddies.length-1].userData.moveSpeed = speed;
-        // Decrease interval for faster spawns
-        window.spawnInterval = Math.max(40, 200 - window.baddieDifficulty*8);
+        window.baddieDifficulty += zombiesPerSpawn;
+        for (let n = 0; n < zombiesPerSpawn; n++) {
+            // Random spawn position anywhere on platform (avoid spawning too close to player)
+            let x, z;
+            do {
+                x = Math.random()*38 - 19;
+                z = Math.random()*38 - 19;
+            } while (Math.abs(x - camera.position.x) < 3 && Math.abs(z - camera.position.z) < 3);
+            // Increase health and speed as difficulty rises
+            const health = BAD_GUY_HEALTH + Math.floor((window.baddieDifficulty + n)/3);
+            const speed = 0.03 + (window.baddieDifficulty + n)*0.003;
+            createBaddie(x, z);
+            baddies[baddies.length-1].userData.health = health;
+            baddies[baddies.length-1].userData.moveSpeed = speed;
+        }
     }
     // Baddie shooting: only snipers (with guns) shoot, and only when alert
     for (let baddie of baddies) {
